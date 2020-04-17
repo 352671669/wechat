@@ -1,0 +1,24 @@
+.container {
+	padding: 0 20px;
+}
+.container a {
+	color: #3c96ff;
+	text-decoration: none;
+}
+.container p {
+  	text-indent: 28px;
+  	line-height: 24px;
+  	font-size: 14px;
+  	color: #353535;
+  	margin-bottom: 10px;
+  	text-align: justify;
+}
+
+.logo-wrapper {
+	text-align: center;
+}
+.logo {
+  	width: 140px;
+  	margin: 100px auto 20px auto;
+  	display: inline-block;
+}

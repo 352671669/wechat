@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Status{% endblock %}
+{% block status %}class="active"{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% for status in statuses %}
+            <div class="row">
+                <div class="col-md-2">
+                    <img src="/static/image/{{ status.user.pic }}" class="img-responsive img-thumbnail">
+                </div>
+                <div class="col-md-10">
+                    <h1 style="font-size:70px">{{ status.user }}</h1>
+                    <p style="font-size:50px">{{ status.text }}</p>
+                    {% if status.pics %}
+                        <div class="col-md-8">
+                            <img src="/static/image/{{ status.pics }}" class="img-responsive">
+                        </div>
+                    {% endif %}
+                    <div class="col-md-12">
+                        <p style="float:left; color:gray; font-size:30px">{{ status.pub_time|date:"m-d-Y H:i:s" }}</p>
+                        <button style="float:right;background-color:gray" class="btn btn-default" data-container="body"
+                                data-toggle="popover" data-placement="left"
+                                data-content='<span style="cursor:pointer"><span class="glyphicon glyphicon-heart-empty " aria-hidden="true">like</span></span>
+                                              <span style="cursor:pointer" onclick ="common({{ status.id }})"><span class="glyphicon glyphicon-comment " aria-hidden="true">comment</span></span>'
+                                data-html="true">
+                            {#                            <span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"#}
+                            {#                                  style="color:white"></span>#}
+                        </button>
+                    </div>
+                    {% if status.likes or status.comments %}
+                        <div class="col-md-12" style="background-color:gray; padding-top:20px">
+                            {% if status.likes %}
+                                <p style="font-size:30px"><span class="glyphicon glyphicon-heart-empty"
+                                                                aria-hidden="true">
+
+                        </span>{% for like in status.likes %}
+                                    {{ like.author }}{% if not forloop.last %},{% endif %}
+                                {% endfor %}</p>
+                                {% if status.comments %}
+                                    <hr>{% endif %}
+                            {% endif %}
+                            {% for comment in status.comments %}
+                                <p style="font-size:30px">{{ comment.author }}{% if comment.at_person %}@
+                                    {{ comment.at_person }}{% endif %}: {{ comment.text }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+            <hr>
+        {% endfor %}
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        })
+
+        function like(status_id) {
+            $.ajax({
+                url: "/like",
+                type: "post",
+                data: {
+                    'status_id': status_id,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+
+
+                }
+            })
+        }
+
+        function common(status_id) {
+            $('#myModal').modal()
+            $('#myModal').attr("status_id", status_id)
+        }
+
+    </script>
+{% endblock %}
